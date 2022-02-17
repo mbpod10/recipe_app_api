@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from core import models
 
+from core.management.commands.print_to_screen import Command
+
 
 def sample_user(email='test@gmail.com', password='testpass'):
     """Create a sample user"""
@@ -9,6 +11,9 @@ def sample_user(email='test@gmail.com', password='testpass'):
 
 
 class ModelTests(TestCase):
+
+    def setUp(self):
+        self.command = Command()
 
     def test_create_user_with_email_successful(self):
         """Test creating a new user with an email is successful"""
@@ -67,3 +72,16 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(ingredient), ingredient.name)
+
+    def test_recipe_str(self):
+        """Test the recipe string representation"""
+        self.command.handle("Test the recipe string representation...")
+
+        recipe = models.Recipe.objects.create(
+            user=sample_user(),
+            title='Steak & Mushroom Sauce',
+            time_minutes=5,
+            price=5.00
+        )
+
+        self.assertEqual(str(recipe), recipe.title)
