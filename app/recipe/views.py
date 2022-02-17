@@ -48,6 +48,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Return objects for current authenticated user"""
         return self.queryset.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        """Create a new object"""
-        serializer.save(user=self.request.user)
+    def get_serializer_class(self):
+        """Return serializer class"""
+        if self.action == 'retrieve':
+            return serializers.RecipeDetailSerializer
+
+        return self.serializer_class
